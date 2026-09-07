@@ -1,0 +1,260 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Smart Pedestrian Safety Dashboard</title>
+  <!-- Fonts & Icons -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,100..900&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
+  <!-- Vite will inject the compiled CSS -->
+  <link rel="stylesheet" href="/src/style.css" />
+</head>
+
+<body>
+  <!-- AUTH OVERLAY -->
+  <div id="authOverlay" class="auth-overlay">
+    <div class="auth-card">
+      <!-- Login Form -->
+      <div id="loginForm" class="auth-form active">
+        <div class="auth-logo">
+          <i class="fas fa-robot"></i>
+          <span>Gutawire</span>
+        </div>
+        <h2>Welcome Back</h2>
+        <p class="auth-sub">Sign in to manage the smart bumper system</p>
+        <div class="auth-input-group">
+          <i class="fas fa-user"></i>
+          <input type="text" id="loginUsername" placeholder="Username" />
+        </div>
+        <div class="auth-input-group">
+          <i class="fas fa-lock"></i>
+          <input type="password" id="loginPassword" placeholder="Password" />
+        </div>
+        <button id="loginBtn" class="auth-btn primary">Sign In</button>
+        <p class="auth-switch">
+          Don't have an account? <span id="showRegisterLink">Sign Up</span>
+        </p>
+        <div id="loginError" class="auth-error hidden"></div>
+      </div>
+
+      <!-- Register Form -->
+      <div id="registerForm" class="auth-form">
+        <div class="auth-logo">
+          <i class="fas fa-robot"></i>
+          <span>Gutawire</span>
+        </div>
+        <h2>Create Account</h2>
+        <p class="auth-sub">Register to get access to the dashboard</p>
+        <div class="auth-input-group">
+          <i class="fas fa-user"></i>
+          <input type="text" id="registerUsername" placeholder="Choose a username" />
+        </div>
+        <div class="auth-input-group">
+          <i class="fas fa-envelope"></i>
+          <input type="email" id="registerEmail" placeholder="Email (optional)" />
+        </div>
+        <div class="auth-input-group">
+          <i class="fas fa-lock"></i>
+          <input type="password" id="registerPassword" placeholder="Password (min 6 chars)" />
+        </div>
+        <button id="registerBtn" class="auth-btn primary">Sign Up</button>
+        <p class="auth-switch">
+          Already have an account? <span id="showLoginLink">Sign In</span>
+        </p>
+        <div id="registerError" class="auth-error hidden"></div>
+      </div>
+    </div>
+  </div>
+  <!-- ====== Paste the ENTIRE <div class="dashboard"> from the original code here ====== -->
+  <!-- (Everything from <div class="dashboard" id="app"> ... </div>) -->
+  <!-- ============================================================================== -->
+  <div class="dashboard" id="app">
+
+    <!-- ==========================================================
+        HEADER
+        ========================================================== -->
+    <header class="header">
+      <div class="header-left">
+        <div class="header-logo">
+          <i class="fas fa-robot"></i>
+        </div>
+        <div class="header-title">
+          <h1>Smart Pedestrian Safety</h1>
+          <span>Real‑time monitoring &amp; control</span>
+        </div>
+      </div>
+      <div class="header-right">
+        <div class="header-status">
+          <span class="status-dot online" id="systemDot"></span>
+          <span id="systemStatusLabel">Online</span>
+          <span style="color:var(--text-muted);margin-left:4px;">·</span>
+          <span id="lastUpdateLabel" style="color:var(--text-muted);font-size:13px;">Last update: --</span>
+        </div>
+        <div class="header-clock" id="clockDisplay">--:--:--</div>
+        <button id="logoutBtn" class="admin-btn danger" style="padding: 6px 16px; font-size: 13px;">
+          <i class="fas fa-sign-out-alt"></i> Logout
+        </button>
+      </div>
+    </header>
+
+    <!-- ==========================================================
+        STATUS GRID (4 cards)
+        ========================================================== -->
+    <section class="status-grid">
+
+      <!-- Vehicle Detected -->
+      <div class="status-card" id="cardVehicleDetected">
+        <div class="card-label">
+          <i class="fas fa-car"></i> Vehicle Detected
+        </div>
+        <div class="card-value">
+          <span id="vehicleDetectedValue">No</span>
+          <span class="badge badge-gray" id="vehicleDetectedBadge">—</span>
+        </div>
+        <i class="fas fa-car card-icon-big"></i>
+      </div>
+
+      <!-- Vehicle Stopped -->
+      <div class="status-card" id="cardVehicleStopped">
+        <div class="card-label">
+          <i class="fas fa-stop-circle"></i> Vehicle Stopped
+        </div>
+        <div class="card-value">
+          <span id="vehicleStoppedValue">No</span>
+          <span class="badge badge-gray" id="vehicleStoppedBadge">—</span>
+        </div>
+        <i class="fas fa-stop-circle card-icon-big"></i>
+      </div>
+
+      <!-- Bump Status -->
+      <div class="status-card" id="cardBump">
+        <div class="card-label">
+          <i class="fas fa-road"></i> Bump Status
+        </div>
+        <div class="card-value">
+          <span id="bumpStatusValue">Lowered</span>
+          <span class="badge badge-gray" id="bumpStatusBadge">⬇</span>
+        </div>
+        <i class="fas fa-road card-icon-big"></i>
+      </div>
+
+      <!-- System Status -->
+      <div class="status-card" id="cardSystem">
+        <div class="card-label">
+          <i class="fas fa-microchip"></i> System Health
+        </div>
+        <div class="card-value">
+          <span id="systemHealthValue">Operational</span>
+          <span class="badge badge-green" id="systemHealthBadge">✓</span>
+        </div>
+        <i class="fas fa-microchip card-icon-big"></i>
+      </div>
+
+    </section>
+
+    <!-- ==========================================================
+        TRAFFIC LIGHT + PEDESTRIAN CROSSING
+        ========================================================== -->
+    <section class="traffic-pedestrian-row">
+
+      <!-- Traffic Light -->
+      <div class="traffic-light-card">
+        <div class="tl-label">
+          <i class="fas fa-traffic-light"></i> Traffic Light
+        </div>
+        <div class="traffic-light" id="trafficLightContainer">
+          <div class="tl-bulb" id="tlRed" data-color="red"></div>
+          <div class="tl-bulb" id="tlYellow" data-color="yellow"></div>
+          <div class="tl-bulb" id="tlGreen" data-color="green"></div>
+        </div>
+        <div>
+          <div class="tl-label-text">Current state</div>
+          <div class="tl-status-text red" id="tlStatusText">RED</div>
+        </div>
+      </div>
+
+      <!-- Pedestrian Crossing -->
+      <div class="pedestrian-card">
+        <div class="ped-label">
+          <i class="fas fa-person-walking"></i> Pedestrian Crossing
+        </div>
+        <div class="pedestrian-status">
+          <span class="ped-icon" id="pedIcon">
+            <i class="fas fa-person-walking"></i>
+          </span>
+          <span class="ped-text" id="pedText">Allowed</span>
+          <span class="badge badge-green" id="pedBadge">✓</span>
+        </div>
+      </div>
+
+    </section>
+
+    <!-- ==========================================================
+        ADMIN CONTROLS
+        ========================================================== -->
+    <section class="admin-section">
+      <div class="section-title">
+        <i class="fas fa-sliders-h"></i> Admin Controls
+        <span style="font-size:13px;font-weight:400;color:var(--text-muted);margin-left:6px;">
+          (manual override for abnormalities)
+        </span>
+      </div>
+      <div class="admin-controls">
+        <button class="admin-btn danger" id="btnTurnOffLight">
+          <i class="fas fa-lightbulb"></i> Turn Off Traffic Light
+        </button>
+        <button class="admin-btn warning" id="btnTurnOffBump">
+          <i class="fas fa-road"></i> Turn Off Bump
+        </button>
+        <button class="admin-btn success" id="btnLowerBump">
+          <i class="fas fa-arrow-down"></i> Lower Bump
+        </button>
+        <button class="admin-btn primary" id="btnResetSystem">
+          <i class="fas fa-sync-alt"></i> Reset System
+        </button>
+      </div>
+      <div
+        style="margin-top:14px;font-size:13px;color:var(--text-muted);display:flex;align-items:center;gap:8px;flex-wrap:wrap;">
+        <i class="fas fa-info-circle"></i>
+        <span>Use these controls only when the system detects abnormalities. All actions are logged.</span>
+      </div>
+      <!-- Add this button next to the existing controls -->
+      <button class="admin-btn primary" id="btnSetManual">
+        <i class="fas fa-hand"></i> Manual Mode
+      </button>
+      <button class="admin-btn success" id="btnSetAuto">
+        <i class="fas fa-robot"></i> Auto Mode
+      </button>
+      <span style="margin-left: 12px; font-weight: 600;" id="modeDisplay">
+        Mode: <span id="modeValue" style="color: var(--accent-cyan);">AUTO</span>
+      </span>
+    </section>
+
+    <!-- ==========================================================
+        EVENT LOG
+        ========================================================== -->
+    <section class="event-log-section">
+      <div class="section-title">
+        <span><i class="fas fa-history"></i> Event Log</span>
+        <span class="event-log-count" id="eventCount">0 events</span>
+      </div>
+      <div class="event-log-container" id="eventLogContainer">
+        <div class="event-log" id="eventLog">
+          <div class="event-empty">
+            <i class="fas fa-inbox" style="font-size:20px;display:block;margin-bottom:8px;opacity:0.4;"></i>
+            No events yet. Waiting for system data…
+          </div>
+        </div>
+      </div>
+    </section>
+
+  </div>
+
+  <script type="module" src="/src/main.js"></script>
+</body>
+
+</html>
